@@ -18,9 +18,6 @@ app.get('/aichat', async (req, res) => {
   }
 
   if (apikey === "sicuani") {
-    return res.json({ status: false, respuesta: "adios mundo xd" });
-  }
-
   try {
     const messages = [
       { role: "system", content: rol },
@@ -31,7 +28,9 @@ app.get('/aichat', async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ status: false, respuesta: "Error interno del servidor" });
-  }
+  } else return res.json({ status: false, respuesta: "adios mundo xd" });
+
+
 });
 
 app.listen(port, () => {
