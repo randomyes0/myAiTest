@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "g4f","^1.4.6 "
+    "g4f": "^1.4.6 "
   },
   "author": "zy",
   "license": "ISC"
