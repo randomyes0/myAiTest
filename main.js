@@ -18,19 +18,20 @@ app.get('/aichat', async (req, res) => {
   }
 
   if (apikey === "sicuani") {
-  try {
-    const messages = [
-      { role: "system", content: rol },
-      { role: "user", content: entrada }
-    ];
-    const rpt = await g4f.chatCompletion(messages);
-    return res.json({ status: true, chat: entrada, respuesta: rpt });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ status: false, respuesta: "Error interno del servidor" });
-  } else return res.json({ status: false, respuesta: "adios mundo xd" });
-
-
+    try {
+      const messages = [
+        { role: "system", content: rol },
+        { role: "user", content: entrada }
+      ];
+      const rpt = await g4f.chatCompletion(messages);
+      return res.json({ status: true, chat: entrada, respuesta: rpt });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ status: false, respuesta: "Error interno del servidor" });
+    }
+  } else {
+    return res.json({ status: false, respuesta: "adios mundo xd" });
+  }
 });
 
 app.listen(port, () => {
