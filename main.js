@@ -37,13 +37,18 @@ app.get('/aichat', async (req, res) => {
 
 app.get('/ytdl', async (req, res) => {
   const { q, apikey } = req.query;
-  if (!q || !apikey && !apikey === "sicuani") return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
+  if (!q || apikey !== "sicuani") {
+    return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
+  }
 
   try {
-    const videoUrl = q
-    if (!ytdl.validateURL(videoUrl)) return res.status(400).send("Youtube! >:v");
+    const videoUrl = q;
+    if (!ytdl.validateURL(videoUrl)) {
+      return res.status(400).send("Youtube! >:v");
+    }
 
-    const agent = ytdl.createProxyAgent({ uri: myProxy }, cookies);
+    // Asegúrate de definir o eliminar `cookies` si no se necesita
+    const agent = ytdl.createProxyAgent({ uri: myProxy });
     const { formats, videoDetails } = await ytdl.getInfo(videoUrl, { agent });
 
     const bitrates = [48, 64, 160];
@@ -51,15 +56,17 @@ app.get('/ytdl', async (req, res) => {
 
     bitrates.some(bitrate => {
       audioFormat = formats.find(f => f.mimeType?.includes("audio/webm") && f.audioBitrate === bitrate);
-      return audioFormat; // .some will return true if audioFormat is found
+      return audioFormat; // `.some` devolverá `true` si se encuentra `audioFormat`
     });
+
+    if (!audioFormat) {
+      return res.status(400).send("Formato de audio no encontrado");
+    }
+
+    res.json(audioFormat);
     
-    if (!audioFormat) return res.status(400).send(Estado.error);
-    
-    res.json(audioFormat)
-    
-  } catch {
-    res.json(Estado.error);
+  } catch (e) {
+    res.json({ error: e.toString() });
   }
 });
 
