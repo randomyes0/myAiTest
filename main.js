@@ -35,7 +35,7 @@ app.get('/aichat', async (req, res) => {
   }
 });
 
-app.get('/ytdl', async (req, res) => {
+app.get('/ytdla', async (req, res) => {
   const { q, apikey } = req.query;
   if (!q || apikey !== "sicuani") {
     return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
