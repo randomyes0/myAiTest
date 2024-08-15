@@ -55,7 +55,7 @@ app.get('/ytdla', async (req, res) => {
     let audioFormat = null;
 
     bitrates.some(bitrate => {
-      audioFormat = formats.find(f => f.mimeType?.includes("audio/webm") && f.audioBitrate === bitrate);
+      audioFormat = formats.find(f => f.mimeType?.includes("audio/webm") && f.audioBitrate === bitrate && f.hasAudio);
       return audioFormat; // `.some` devolverá `true` si se encuentra `audioFormat`
     });
 
