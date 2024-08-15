@@ -24,7 +24,7 @@ app.get('/aichat', async (req, res) => {
         { role: "user", content: entrada }
       ];
       const rpt = await g4f.chatCompletion(messages);
-      return res.json({ status: true, chat: entrada, respuesta: rpt });
+      return res.json({ status: true, chat: entrada, respuesta: rpt, version: "v1" });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: false, respuesta: "Error interno del servidor" });
