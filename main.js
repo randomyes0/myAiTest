@@ -51,7 +51,7 @@ app.get('/ytdla', async (req, res) => {
     const agent = ytdl.createProxyAgent({ uri: myProxy });
     const { formats, videoDetails } = await ytdl.getInfo(videoUrl, { agent });
 
-    const bitrates = [128, 160];
+    const bitrates = [48, 64, 160];
     let audioFormat = null;
 
     bitrates.some(bitrate => {
