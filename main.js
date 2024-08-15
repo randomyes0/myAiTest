@@ -37,7 +37,7 @@ app.get('/aichat', async (req, res) => {
 
 app.get('/ytdl', async (req, res) => {
   const { q, apikey } = req.query;
-  if (!q || !apikey || !ApiKeys === "sicuani") return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
+  if (!q || !apikey && !apikey === "sicuani") return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
 
   try {
     const videoUrl = q
