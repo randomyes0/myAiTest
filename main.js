@@ -75,7 +75,8 @@ app.get('/neon-gif', async (req, res) => {
     encoder.finish();
 
     const gifBuffer = encoder.out.getData();
-    
+
+  res.set('Content-Type', 'image/gif');
     res.send(gifBuffer);
 });
 
