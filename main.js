@@ -36,6 +36,41 @@ app.get('/aichat', async (req, res) => {
   }
 });
 
+app.get('/neon-gif', async (req, res) => {
+    const { text } = req.query;
+    const canvasWidth = 800;
+    const canvasHeight = 600;
+    const frameCount = 60;
+    const frameDuration = 500;
+    const colors = ['#FF00FF', '#00FFFF', '#FF69B4', '#FF4500', '#00FF00', '#8A2BE2']; // Colores tipo neon
+    const canvas = createCanvas(canvasWidth, canvasHeight);
+    const ctx = canvas.getContext('2d');
+    
+    // Función para generar un color aleatorio en cada frame
+    const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
+
+    const frames = [];
+    for (let i = 0; i < frameCount; i++) {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        let fontSize = 100;
+        ctx.font = `${fontSize}px 'Arial'`; 
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = getRandomColor(); 
+
+        ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
+
+        const frameData = canvas.toDataURL('image/png');
+        frames.push(frameData);
+    }
+
+    res.json({ frames: frames });
+});
+
 app.get('/ttp', async (req, res) => {
   const text = req.query.text || 'Hello, World!'; 
   const canvasWidth = 800;
