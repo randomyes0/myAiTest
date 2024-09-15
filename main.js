@@ -37,15 +37,14 @@ app.get('/aichat', async (req, res) => {
 });
 
 app.get('/neon-gif', async (req, res) => {
-    const { text } = req.query;
-    const canvasWidth = 800;
-    const canvasHeight = 600;
-    const frameCount = 60;
-    const frameDuration = 500;
+    const { text = 'Texto' } = req.query; // Asigna un valor por defecto para evitar errores
+    const canvasWidth = 200;
+    const canvasHeight = 200;
+    const frameCount = 60; // 60 frames para una animación de 6 segundos
     const colors = ['#FF00FF', '#00FFFF', '#FF69B4', '#FF4500', '#00FF00', '#8A2BE2']; // Colores tipo neon
     const canvas = createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext('2d');
-    
+
     // Función para generar un color aleatorio en cada frame
     const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
 
@@ -56,19 +55,23 @@ app.get('/neon-gif', async (req, res) => {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        let fontSize = 100;
-        ctx.font = `${fontSize}px 'Arial'`; 
+        // Ajusta el tamaño de la fuente para que se ajuste mejor a un lienzo de 200x200
+        let fontSize = 20; // Ajusta según sea necesario
+        ctx.font = `${fontSize}px 'Arial'`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = getRandomColor(); 
+        ctx.fillStyle = getRandomColor();
 
+        // Dibuja el texto en el centro del lienzo
         ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
 
+        // Convertir el canvas a una imagen base64 y almacenarla
         const frameData = canvas.toDataURL('image/png');
         frames.push(frameData);
     }
 
-    res.json({ frames: frames });
+    // Devolver los frames en formato JSON
+    res.send(frames);
 });
 
 app.get('/ttp', async (req, res) => {
