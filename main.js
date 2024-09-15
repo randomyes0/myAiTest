@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const ytdl = require("@distube/ytdl-core");
+const { createCanvas, loadImage } = require('canvas');
 const { G4F } = require("g4f");
 const g4f = new G4F();
 const { cookies } = require('./cookies.js'); //test
@@ -33,6 +34,57 @@ app.get('/aichat', async (req, res) => {
   } else {
     return res.json({ status: false, respuesta: "adios mundo xd" });
   }
+});
+
+app.get('/ttp', async (req, res) => {
+  const text = req.query.text || 'Hello, World!'; 
+  const canvasWidth = 800;
+  const canvasHeight = 600;
+  const backgroundColor = '#f0f0f0';
+
+  const canvas = createCanvas(canvasWidth, canvasHeight);
+  const ctx = canvas.getContext('2d');
+
+  const backgroundImage = 'https://example.com/background-image.jpg';
+  try {
+    const img = await loadImage(backgroundImage);
+    ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+  } catch (error) {
+    ctx.fillStyle = backgroundColor;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  }
+
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 4;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+  ctx.shadowBlur = 10;
+  ctx.strokeRect(20, 20, canvasWidth - 40, canvasHeight - 40);
+
+  let fontSize = 80;
+  ctx.font = `${fontSize}px 'Arial'`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const textGradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+  textGradient.addColorStop(0, '#ff0000');
+  textGradient.addColorStop(1, '#0000ff');
+  ctx.fillStyle = textGradient;
+
+  let textWidth = ctx.measureText(text).width;
+  while (textWidth > canvasWidth - 40) {
+    fontSize--;
+    ctx.font = `${fontSize}px 'Arial'`;
+    textWidth = ctx.measureText(text).width;
+  }
+
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+  ctx.shadowBlur = 10;
+  ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
+
+  const buffer = canvas.toBuffer('image/png');
+  const base64Image = buffer.toString('base64');
+
+  res.send(base64Image);
 });
 
 app.get('/ytdla', async (req, res) => {
