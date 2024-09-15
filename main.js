@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const ytdl = require("@distube/ytdl-core");
 const { createCanvas, loadImage } = require('canvas');
+const GIFEncoder = require('gifencoder');
 const { G4F } = require("g4f");
 const g4f = new G4F();
 const { cookies } = require('./cookies.js'); //test
@@ -37,41 +38,45 @@ app.get('/aichat', async (req, res) => {
 });
 
 app.get('/neon-gif', async (req, res) => {
-    const { text = 'Texto' } = req.query; // Asigna un valor por defecto para evitar errores
+    const { text = 'Texto' } = req.query;
     const canvasWidth = 200;
     const canvasHeight = 200;
-    const frameCount = 60; // 60 frames para una animación de 6 segundos
-    const colors = ['#FF00FF', '#00FFFF', '#FF69B4', '#FF4500', '#00FF00', '#8A2BE2']; // Colores tipo neon
+    const frameCount = 60; 
+    const colors = ['#FF00FF', '#00FFFF', '#FF69B4', '#FF4500', '#00FF00', '#8A2BE2'];
+
     const canvas = createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext('2d');
 
-    // Función para generar un color aleatorio en cada frame
+    const encoder = new GIFEncoder(canvasWidth, canvasHeight);
+    encoder.start();
+    encoder.setRepeat(0);
+    encoder.setDelay(500);
+    encoder.setQuality(10); 
+
     const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
 
-    const frames = [];
     for (let i = 0; i < frameCount; i++) {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        // Ajusta el tamaño de la fuente para que se ajuste mejor a un lienzo de 200x200
-        let fontSize = 20; // Ajusta según sea necesario
+        let fontSize = 20;
         ctx.font = `${fontSize}px 'Arial'`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = getRandomColor();
 
-        // Dibuja el texto en el centro del lienzo
         ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
 
-        // Convertir el canvas a una imagen base64 y almacenarla
-        const frameData = canvas.toDataURL('image/png');
-        frames.push(frameData);
+        encoder.addFrame(ctx);
     }
 
-    // Devolver los frames en formato JSON
-    res.send(frames);
+    encoder.finish();
+
+    const gifBuffer = encoder.out.getData();
+    
+    res.send(gifBuffer);
 });
 
 app.get('/ttp', async (req, res) => {
