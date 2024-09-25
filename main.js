@@ -37,47 +37,57 @@ app.get('/aichat', async (req, res) => {
   }
 });
 
-app.get('/neon-gif', async (req, res) => {
-    const { text = 'Texto' } = req.query;
-    const canvasWidth = 200;
-    const canvasHeight = 200;
-    const frameCount = 60; 
-    const colors = ['#FF00FF', '#00FFFF', '#FF69B4', '#FF4500', '#00FF00', '#8A2BE2'];
+app.get('/giftext', async (req, res) => {
+    const width = 200;
+    const height = 200;
+    const duration = 6; 
+    const fps = 5; 
+    const totalFrames = duration * fps;
 
-    const canvas = createCanvas(canvasWidth, canvasHeight);
+    const encoder = new GIFEncoder(width, height);
+    const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
-    const encoder = new GIFEncoder(canvasWidth, canvasHeight);
+    
+    const inputText = req.query.text || 'ABC'; // Por defecto 'ABC' si no se proporciona texto
+
+    
     encoder.start();
-    encoder.setRepeat(0);
-    encoder.setDelay(500);
+    encoder.setRepeat(0); 
+    encoder.setDelay(100); 
     encoder.setQuality(10); 
 
-    const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
+    
+    function randomNeonColor() {
+        const colors = ['#ff073a', '#39ff14', '#fffc33', '#ff66cc', '#00ccff', '#ccff00'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
 
-    for (let i = 0; i < frameCount; i++) {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    for (let i = 0; i < totalFrames; i++) {
+        ctx.fillStyle = 'black'; 
+        ctx.fillRect(0, 0, width, height);
 
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        
+        ctx.font = 'bold 40px Arial';
+        ctx.fillStyle = randomNeonColor();
+        
+        
+        const randomChar = inputText.charAt(i % inputText.length); 
+        ctx.fillText(randomChar, 75, 125);
 
-        let fontSize = 20;
-        ctx.font = `${fontSize}px 'Arial'`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = getRandomColor();
-
-        ctx.fillText(text, canvasWidth / 2, canvasHeight / 2);
-
+        
         encoder.addFrame(ctx);
     }
 
     encoder.finish();
 
+    
     const gifBuffer = encoder.out.getData();
 
-  res.set('Content-Type', 'image/gif');
-    res.send(gifBuffer);
+    
+    const gifBase64 = gifBuffer.toString('base64');
+    res.send(gifBase64); 
 });
 
 app.get('/ttp', async (req, res) => {
