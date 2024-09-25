@@ -38,6 +38,7 @@ app.get('/aichat', async (req, res) => {
 });
 
 app.get('/giftext', async (req, res) => {
+  try {
     const width = 200;
     const height = 200;
     const duration = 6; 
@@ -88,6 +89,9 @@ app.get('/giftext', async (req, res) => {
     
     const gifBase64 = gifBuffer.toString('base64');
     res.send(gifBase64); 
+  } catch (e) {
+res.send(e)
+  }
 });
 
 app.get('/ttp', async (req, res) => {
