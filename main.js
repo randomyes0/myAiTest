@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 app.use(express.static('public')); // Mover esto antes de las rutas
 
 app.get('/', (req, res) => {
-  res.send('¡Hola, mundo!');
+  res.send('¡Hola, mundo XD!');
 });
 
 app.get('/aichat', async (req, res) => {
