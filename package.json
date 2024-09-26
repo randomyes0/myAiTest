@@ -11,7 +11,7 @@
     "express": "^4.19.2",
     "g4f": "^1.4.6 ",
     "canvas": "^2.11.2",
-    "gifencoder": "^2.0.1",
+    "gifencoder": "^2.0.1"
   },
   "author": "zy",
   "license": "ISC"
