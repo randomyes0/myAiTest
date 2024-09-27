@@ -3,14 +3,14 @@ const app = express();
 const ytdl = require("@distube/ytdl-core");
 const { G4F } = require("g4f");
 const g4f = new G4F();
-const { cookies } = require('./cookies.js'); //test
-const { myProxy } = require('./proxy.js'); //test
+const { cookies } = require('./cookies.js'); //RRR
+const { myProxy } = require('./proxy.js'); //RRR
 const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.send('¡Hola, mundo XD!');
+  res.send('¡Hello World!');
 });
 
 app.get('/aichat', async (req, res) => {
@@ -46,8 +46,7 @@ app.get('/ytdla', async (req, res) => {
     if (!ytdl.validateURL(videoUrl)) {
       return res.status(400).send("Youtube! >:v");
     }
-
-    // Asegúrate de definir o eliminar `cookies` si no se necesita
+    
     const agent = ytdl.createProxyAgent({ uri: myProxy });
     const { formats, videoDetails } = await ytdl.getInfo(videoUrl, { agent });
 
@@ -56,7 +55,7 @@ app.get('/ytdla', async (req, res) => {
 
     bitrates.some(bitrate => {
       audioFormat = formats.find(f => f.mimeType?.includes("audio/webm") && f.audioBitrate === bitrate && f.hasAudio);
-      return audioFormat; // `.some` devolverá `true` si se encuentra `audioFormat`
+      return audioFormat;
     });
 
     if (!audioFormat) {
@@ -81,8 +80,7 @@ app.get('/ytdlv', async (req, res) => {
     if (!ytdl.validateURL(videoUrl)) {
       return res.status(400).send("Youtube! >:v");
     }
-
-    // Asegúrate de definir o eliminar `cookies` si no se necesita
+    
     const agent = ytdl.createProxyAgent({ uri: myProxy });
     const { formats, videoDetails } = await ytdl.getInfo(videoUrl, { agent });
 
@@ -91,7 +89,7 @@ app.get('/ytdlv', async (req, res) => {
 
     quality.some(qlv => {
       audioFormat = formats.find(f => f.mimeType?.includes("video/mp4") && f.qualityLabel === qlv && f.hasVideo && f.hasAudio);
-      return audioFormat; // `.some` devolverá `true` si se encuentra `audioFormat`
+      return audioFormat;
     });
 
     if (!audioFormat) {
