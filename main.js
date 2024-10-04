@@ -9,9 +9,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-  res.send('¡Hello World!');
-});
+app.get("/",((n,e)=>{e.send('\n        <!DOCTYPE html>\n        <html lang="es">\n        <head>\n            <meta charset="UTF-8">\n            <meta name="viewport" content="width=device-width, initial-scale=1.0">\n            <title>Redirección con Imagen</title>\n            <style>\n                html, body {\n                    height: 100%;\n                    margin: 0;\n                    display: flex;\n                    align-items: center;\n                    justify-content: center;\n                    background-color: #000;\n                }\n\n                img {\n                    max-width: 100%;\n                    max-height: 100%;\n                    cursor: pointer;\n                }\n            </style>\n        </head>\n        <body>\n            <a href="https://nekosmic.vercel.app/">\n                <img src="https://raw.githubusercontent.com/NeoKode/multimedia/refs/heads/main/NKhtml/Voyager_1.gif" alt="@NeKosmic">\n            </a>\n        </body>\n        </html>\n    ')}));
 
 app.get('/aichat', async (req, res) => {
   const { apikey, entrada, rol } = req.query;
