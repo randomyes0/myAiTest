@@ -26,7 +26,7 @@ app.get('/aichat', async (req, res) => {
       return res.json({ status: true, chat: entrada, respuesta: rpt, version: "v1" });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ status: false, respuesta: "Error interno del servidor" });
+      return res.status(500).json({ status: false, respuesta: "Error interno del servidor "+error.toString() });
     }
   } else {
     return res.json({ status: false, respuesta: "adios mundo xd" });
