@@ -63,10 +63,16 @@ app.get('/genimg', async (req, res) => {
 
     try {
 
-        herc.drawImage({model:"v3",prompt:entrada,
-            negative_prompt:"",
-            width:500,
-            height:500
+        herc.drawImage({
+  model:"v3",
+  prompt:entrada,
+  negative_prompt: "",
+  sampler: "DPM-Solver",
+  image_style: "Null", //pixel
+  width: 256,
+  height: 256,
+  steps: 10,
+  scale: 5
             }).then((response) => {
             res.redirect(response.url);
             });
