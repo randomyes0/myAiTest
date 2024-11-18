@@ -1,6 +1,10 @@
 const express = require('express');
 
+const { Hercai } = require("hercai")
+
 const { G4F } = require("g4f");
+
+const herc = new Hercai(); 
 
 const g4f = new G4F();
 
@@ -18,17 +22,61 @@ app.get('/aichat', async (req, res) => {
 
   if (apikey === "sicuani") {
     try {
-      const messages = [
-        { role: "system", content: rol || "ai" },
-        { role: "user", content: entrada }
-      ];
-      const rpt = await g4f.chatCompletion(messages);
-      return res.json({ status: true, chat: entrada, respuesta: rpt, version: "v1" });
+
+        res.json({ status: true, chat: entrada, respuesta: "error", version: "v1" });
+      
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: false, respuesta: "Error interno del servidor "+error.toString() });
     }
   } else {
+    return res.json({ status: false, respuesta: "adios mundo xd" });
+  }
+});
+
+app.get('/chatgpt', async (req, res) => {
+    const { apikey, entrada } = req.query;
+  
+    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
+  
+    if (apikey === "sicuani") {
+      try {
+  
+          herc.question({model:"v3",content: entrada}).then(response => {
+              res.json({ status: true, chat: entrada, respuesta: response.reply });
+          });
+        
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: false, respuesta: "Error interno del servidor "+error.toString() });
+      }
+    } else {
+      return res.json({ status: false, respuesta: "adios mundo xd" });
+    }
+  });
+
+app.get('/genimg', async (req, res) => {
+    const { apikey, entrada } = req.query;
+
+    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
+    if (apikey === "sicuani") {
+
+    try {
+
+        herc.drawImage({model:"v3",prompt:entrada,
+            negative_prompt:"",
+            width:500,
+            height:500
+            }).then((response) => {
+            res.redirect(response.url);
+            });
+       
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Ocurrió un error en la generación de la imagen.");
+    }
+
+    } else {
     return res.json({ status: false, respuesta: "adios mundo xd" });
   }
 });
