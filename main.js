@@ -4,9 +4,13 @@ const { Hercai } = require("hercai")
 
 const { G4F } = require("g4f");
 
+const { Brainman } = require("brainman");
+
 const herc = new Hercai(); 
 
 const g4f = new G4F();
+
+const ai = new Brainman();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -86,6 +90,30 @@ app.get('/genimg', async (req, res) => {
     return res.json({ status: false, respuesta: "adios mundo xd" });
   }
 });
+
+app.get('/braiman', async (req, res) => {
+    const { apikey, entrada } = req.query;
+  
+    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
+  
+    if (apikey === "sicuani") {
+      try {
+      	
+      const response = await ai.chat({
+        version: "v1",
+        prompt: entrada,
+    });
+  
+              res.json({ status: true, chat: entrada, respuesta: response });
+        
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: false, respuesta: "Error interno del servidor "+error.toString() });
+      }
+    } else {
+      return res.json({ status: false, respuesta: "adios mundo xd" });
+    }
+  });
 
 app.use((req, res, next) => res.status(404).redirect('https://nekosmic.vercel.app/'));
 
