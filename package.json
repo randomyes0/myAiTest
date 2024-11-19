@@ -10,7 +10,8 @@
     "@distube/ytdl-core": "^4.14.4",
     "express": "^4.19.2",
     "g4f": "^1.4.6 ",
-    "hercai": "^12.4.0"
+    "hercai": "^12.4.0",
+    "brainman": "^1.7.3"
   },
   "author": "zy",
   "license": "ISC"
