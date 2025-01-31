@@ -24,26 +24,7 @@ app.use(express.static('public'));
 
 app.get("/", (req, res) => res.redirect('https://nekosmic.vercel.app/'));
 
-app.get('/aichat', async (req, res) => {
-  const { apikey, entrada, rol } = req.query;
-
-  if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
-
-  if (apikey === "sicuani") {
-    try {
-
-        res.json({ status: true, chat: entrada, respuesta: "error", version: "v1" });
-      
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ status: false, respuesta: "Error interno del servidor "+error.toString() });
-    }
-  } else {
-    return res.json({ status: false, respuesta: "adios mundo xd" });
-  }
-});
-
-app.get('/chatgpt', async (req, res) => {
+app.get('/ai', async (req, res) => {
     const { apikey, entrada } = req.query;
   
     if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
@@ -51,9 +32,26 @@ app.get('/chatgpt', async (req, res) => {
     if (apikey === "sicuani") {
       try {
   
-          herc.question({model:"v3",content: entrada}).then(response => {
-              res.json({ status: true, chat: entrada, respuesta: response.reply });
-          });
+          const url = 'https://api.blackbox.ai/api/chat';
+    const data = {
+        messages: [
+            {
+                content: entrada,
+                role: "user"
+            }
+        ],
+        model: "deepseek-ai/DeepSeek-V3",
+        max_tokens: "1024"
+    };
+
+    
+        const response = await axios.post(url, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+              res.json({ status: true, chat: entrada, respuesta: response.data });
         
       } catch (error) {
         console.error(error);
@@ -64,7 +62,7 @@ app.get('/chatgpt', async (req, res) => {
     }
   });
 
-app.get('/genimg', async (req, res) => {
+app.get('/aimg', async (req, res) => {
     const { apikey, entrada } = req.query;
 
     if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
@@ -72,23 +70,29 @@ app.get('/genimg', async (req, res) => {
 
     try {
 
-        herc.drawImage({
-  model:"v3",
-  prompt:entrada,
-  negative_prompt: "",
-  sampler: "DPM-Solver",
-  image_style: "Null", //pixel
-  width: 256,
-  height: 256,
-  steps: 10,
-  scale: 5
-            }).then((response) => {
-            res.redirect(response.url);
-            });
+ const data = {
+ captionInput: "Genera una imagen de un paisaje anime",
+ captionModel: "default"
+ };
+
+ const url = 'https://chat-gpt.pictures/api/generateImage';
+
+ 
+ const response = await fetch(url, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json'
+ },
+ body: JSON.stringify(data)
+ });
+
+ const result = await response.json();
+
+            res.redirect(result.imgs[0]);
        
     } catch (error) {
         console.error(error);
-        res.status(500).send("Ocurrió un error en la generación de la imagen.");
+        res.status(500).send("Ocurrió un error en la generación de la imagen. "+error.toString());
     }
 
     } else {
