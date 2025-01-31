@@ -4,6 +4,8 @@ TESTED
 
 const express = require('express');
 
+const axios = require('axios')
+
 const { Hercai } = require("hercai")
 
 const { G4F } = require("g4f");
@@ -27,77 +29,67 @@ app.get("/", (req, res) => res.redirect('https://nekosmic.vercel.app/'));
 app.get('/ai', async (req, res) => {
     const { apikey, entrada } = req.query;
   
-    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
+    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
   
     if (apikey === "sicuani") {
-      try {
-  
-          const url = 'https://api.blackbox.ai/api/chat';
-    const data = {
-        messages: [
-            {
-                content: entrada,
-                role: "user"
-            }
-        ],
-        model: "deepseek-ai/DeepSeek-V3",
-        max_tokens: "1024"
-    };
-
+        try {
+            const url = 'https://api.blackbox.ai/api/chat';
+            const data = {
+                messages: [
+                    {
+                        content: entrada,
+                        role: "user"
+                    }
+                ],
+                model: "deepseek-ai/DeepSeek-V3",
+                max_tokens: "1024"
+            };
     
-        const response = await axios.post(url, data, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+            const response = await axios.post(url, data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-              res.json({ status: true, chat: entrada, respuesta: response.data });
-        
-      } catch (error) {
-        console.error(error);
-        return res.status(500).json({ status: false, respuesta: "Error interno del servidor "+error.toString() });
-      }
+            res.json({ status: true, chat: entrada, respuesta: response.data });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: false, respuesta: "Error interno del servidor " + error.toString() });
+        }
     } else {
-      return res.json({ status: false, respuesta: "adios mundo xd" });
+        return res.json({ status: false, respuesta: "adios mundo xd" });
     }
-  });
+});
 
 app.get('/aimg', async (req, res) => {
     const { apikey, entrada } = req.query;
 
-    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" })
+    if (!apikey || !entrada) return res.status(400).json({ status: false, respuesta: "Faltan parámetros" });
+
     if (apikey === "sicuani") {
+        try {
+            const url = 'https://chat-gpt.pictures/api/generateImage';
+            const data = {
+                captionInput: entrada,
+                captionModel: "default"
+            };
 
-    try {
+            const response = await axios.post(url, data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
- const data = {
- captionInput: "Genera una imagen de un paisaje anime",
- captionModel: "default"
- };
+            const result = response.data;
 
- const url = 'https://chat-gpt.pictures/api/generateImage';
-
- 
- const response = await fetch(url, {
- method: 'POST',
- headers: {
- 'Content-Type': 'application/json'
- },
- body: JSON.stringify(data)
- });
-
- const result = await response.json();
-
-            res.redirect(result.imgs[0]);
-       
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Ocurrió un error en la generación de la imagen. "+error.toString());
-    }
-
+                res.redirect(result.imgs[0])
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Ocurrió un error en la generación de la imagen. " + error.toString());
+        }
     } else {
-    return res.json({ status: false, respuesta: "adios mundo xd" });
-  }
+        return res.json({ status: false, respuesta: "adios mundo xd" });
+    }
 });
 
 app.get('/braiman', async (req, res) => {
