@@ -105,7 +105,7 @@ app.get('/braiman', async (req, res) => {
         prompt: entrada,
     });
   
-              res.json({ status: true, chat: entrada, respuesta: response });
+              res.json({ status: true, chat: entrada, respuesta: response, "version": "v1" });
         
       } catch (error) {
         console.error(error);
